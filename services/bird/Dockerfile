@@ -38,6 +38,7 @@ COPY --from=builder /usr/local/sbin/birdc /usr/local/sbin/birdc
 RUN apt-get update -y
 RUN apt-get install -y iproute2
 RUN apt-get install -y bash
+RUN apt-get install -y libreadline8
 
 # Set up dirs
 RUN mkdir -p /usr/local/var/run
