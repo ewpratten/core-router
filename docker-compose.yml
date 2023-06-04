@@ -1,0 +1,43 @@
+version: "3"
+
+services:
+
+  # Routing engine
+  bird: 
+    build:
+      context: ./services/bird
+    restart: unless-stopped
+    network_mode: host
+    env_file:
+      - .env
+    volumes:
+      - ./services/bird/etc/bird.conf:/usr/local/etc/bird.conf
+    cap_add:
+      - NET_ADMIN
+
+  # NAT64
+  tayga:
+    build:
+      context: ./services/tayga
+    restart: unless-stopped
+    network_mode: host
+    cap_add:
+      - NET_ADMIN
+    environment:
+      SNAT_IPV4: 23.142.232.26
+      TAYGA_IPV6: "2602:faf5:64::"
+      WAN_INTERFACE: enp1s0
+    privileged: true
+
+  # DNS64
+  coredns:
+    depends_on:
+      - tayga
+    image: coredns/coredns:latest
+    restart: unless-stopped
+    network_mode: host
+    volumes:
+      - ./services/coredns/Corefile:/etc/coredns/Corefile
+    command: 
+      - -conf
+      - /etc/coredns/Corefile
