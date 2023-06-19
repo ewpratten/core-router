@@ -45,9 +45,10 @@ services:
 
   # Bird exporter
   bird_exporter:
-    image: czerwonk/bird_exporter:latest
     depends_on:
       - bird
+    image: czerwonk/bird_exporter:latest
+    network_mode: host
     restart: unless-stopped
     volumes:
       - ./services/bird/var/run:/external/var/run
@@ -59,13 +60,25 @@ services:
   # Node exporter
   node_exporter:
     image: quay.io/prometheus/node-exporter:latest
+    network_mode: host
     restart: unless-stopped
     command:
       - '--path.rootfs=/host'
-    # network_mode: host
     pid: host
     volumes:
       - '/:/host:ro,rslave'
+
+  # Wireguard exporter
+  wireguard_exporter:
+    image: mindflavor/prometheus-wireguard-exporter
+    network_mode: host
+    cap_add:
+        - NET_ADMIN
+    environment:
+        - PROMETHEUS_WIREGUARD_EXPORTER_PREPEND_SUDO_ENABLED=0
+    command: -a true -n /etc/wireguard/vpn.conf -v false
+    volumes:
+        - /etc/wireguard/vpn.conf:/etc/wireguard/vpn.conf:ro
 
   # Exporter exporter
   exporter_exporter:
@@ -75,8 +88,7 @@ services:
       - node_exporter
     image: qubitproducts/exporter_exporter:latest
     restart: unless-stopped
-    ports:
-      - 9999:9999
+    network_mode: host
     volumes:
       - ./services/expexp/expexp.yaml:/etc/expexp/expexp.yaml
     command:

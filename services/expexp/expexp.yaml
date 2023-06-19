@@ -3,16 +3,17 @@ modules:
   bird:
     method: http
     http:
-      address: bird_exporter
       port: 9324
   coredns:
     method: http
     http:
-      address: 23.142.232.1
       port: 9253
   node:
     method: http
     http:
-      address: node_exporter
       port: 9100
+  wireguard:
+    method: http
+    http:
+      port: 9586
   
