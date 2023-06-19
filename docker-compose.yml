@@ -64,7 +64,7 @@ services:
     restart: unless-stopped
     command:
       - '--path.rootfs=/host'
-    network_mode: host
+    # network_mode: host
     pid: host
     volumes:
       - '/:/host:ro,rslave'
