@@ -8,7 +8,7 @@ modules:
   coredns:
     method: http
     http:
-      address: coredns
+      address: 23.142.232.1
       port: 9153
   node:
     method: http
