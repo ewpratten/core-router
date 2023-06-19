@@ -1,0 +1,18 @@
+defaultModule: node
+modules:
+  bird:
+    method: http
+    http:
+      address: bird_exporter
+      port: 9324
+  coredns:
+    method: http
+    http:
+      address: coredns
+      port: 9153
+  node:
+    method: http
+    http:
+      address: node_exporter
+      port: 9100
+  

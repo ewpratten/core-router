@@ -1,5 +1,5 @@
 . {
-    bind 2602:faf5:64::
+    #bind 2602:faf5:64::
     chaos AS54041-DNS64 dns64@ewpratten.com
 
     dns64 64:ff9b::/96

@@ -12,6 +12,7 @@ services:
       - .env
     volumes:
       - ./services/bird/etc/bird.conf:/usr/local/etc/bird.conf
+      - ./services/bird/var/run:/usr/local/var/run
     cap_add:
       - NET_ADMIN
 
@@ -35,9 +36,51 @@ services:
       - tayga
     image: coredns/coredns:latest
     restart: unless-stopped
-    network_mode: host
+    #network_mode: host
+    ports:
+      - 2602:faf5:64::0:53:53/udp
     volumes:
       - ./services/coredns/Corefile:/etc/coredns/Corefile
     command: 
       - -conf
       - /etc/coredns/Corefile
+
+  # Bird exporter
+  bird_exporter:
+    image: czerwonk/bird_exporter:latest
+    depends_on:
+      - bird
+    restart: unless-stopped
+    volumes:
+      - ./services/bird/var/run:/external/var/run
+    command:
+      - bird_exporter
+      - -format.new=true
+      - -bird.socket=/external/var/run/bird.ctl
+
+  # Node exporter
+  node_exporter:
+    image: quay.io/prometheus/node-exporter:latest
+    restart: unless-stopped
+    command:
+      - '--path.rootfs=/host'
+    network_mode: host
+    pid: host
+    volumes:
+      - '/:/host:ro,rslave'
+
+  # Exporter exporter
+  exporter_exporter:
+    depends_on:
+      - coredns
+      - bird_exporter
+      - node_exporter
+    image: qubitproducts/exporter_exporter:latest
+    restart: unless-stopped
+    ports:
+      - 9999:9999
+    volumes:
+      - ./services/expexp/expexp.yaml:/etc/expexp/expexp.yaml
+    command:
+      - -config.file=/etc/expexp/expexp.yaml
+    
