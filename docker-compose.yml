@@ -45,8 +45,8 @@ services:
       - -conf
       - /etc/coredns/Corefile
     networks:
-      internal:
-        ipv6_address: "2602:faf5:64::"
+      - internal
+        # ipv6_address: "2602:faf5:64::"
 
   # Bird exporter
   bird_exporter:
