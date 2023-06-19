@@ -7,7 +7,7 @@ modules:
   coredns:
     method: http
     http:
-      port: 9253
+      port: 9153
   node:
     method: http
     http:
