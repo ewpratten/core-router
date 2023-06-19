@@ -9,7 +9,7 @@ modules:
     method: http
     http:
       address: 23.142.232.1
-      port: 9153
+      port: 9253
   node:
     method: http
     http:
