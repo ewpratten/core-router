@@ -29,9 +29,6 @@ services:
       TAYGA_IPV6: "2602:faf5:64::64"
       WAN_INTERFACE: enp1s0
     privileged: true
-    networks:
-      internal:
-        ipv6_address: "2602:faf5:64::64"
 
   # DNS64
   coredns:
