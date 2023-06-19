@@ -38,7 +38,7 @@ services:
     restart: unless-stopped
     #network_mode: host
     ports:
-      - 2602:faf5:64::0:53:53/udp
+      - "[2602:faf5:64::0]:53:53/udp"
     volumes:
       - ./services/coredns/Corefile:/etc/coredns/Corefile
     command: 
