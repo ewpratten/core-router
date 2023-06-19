@@ -36,7 +36,7 @@ tayga --mktun
 # Configure the translation interface
 ip link set dev nat64 up
 ip addr add 100.64.0.1/10 dev nat64
-ip addr add $TAYGA_IPV6/128 dev nat64
+# ip addr add $TAYGA_IPV6/128 dev nat64
 ip route add 64:ff9b::/96 dev nat64
 
 # Set up SNAT from the translation interface to the outside world

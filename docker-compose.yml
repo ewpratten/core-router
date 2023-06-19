@@ -26,9 +26,12 @@ services:
       - NET_ADMIN
     environment:
       SNAT_IPV4: 23.142.232.26
-      TAYGA_IPV6: "2602:faf5:64::"
+      TAYGA_IPV6: "2602:faf5:64::64"
       WAN_INTERFACE: enp1s0
     privileged: true
+    networks:
+      internal:
+        ipv6_address: "2602:faf5:64::64"
 
   # DNS64
   coredns:
@@ -37,13 +40,15 @@ services:
     image: coredns/coredns:latest
     restart: unless-stopped
     #network_mode: host
-    ports:
-      - "[::]:53:53/udp"
+    # ports:
+    #   - "[::]:53:53/udp"
     volumes:
       - ./services/coredns/Corefile:/etc/coredns/Corefile
     command: 
       - -conf
       - /etc/coredns/Corefile
+    networks:
+        ipv6_address: "2602:faf5:64::"
 
   # Bird exporter
   bird_exporter:
@@ -57,6 +62,8 @@ services:
       - -bird.v2
       - -format.new=true
       - -bird.socket=/external/var/run/bird.ctl
+    networks:
+      - internal
 
   # Node exporter
   node_exporter:
@@ -68,6 +75,8 @@ services:
     pid: host
     volumes:
       - '/:/host:ro,rslave'
+    networks:
+      - internal
 
   # Exporter exporter
   exporter_exporter:
@@ -83,4 +92,16 @@ services:
       - ./services/expexp/expexp.yaml:/etc/expexp/expexp.yaml
     command:
       - -config.file=/etc/expexp/expexp.yaml
+    networks:
+      internal: 
+        ipv6_address: "2602:faf5:64::9999"
     
+networks:
+  internal:
+    driver: bridge
+    enable_ipv6: true
+    ipam:
+      driver: default
+      config:
+        - subnet: 2602:faf5:64::/64
+          gateway: 2602:faf5:64::1
